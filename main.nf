@@ -221,7 +221,9 @@ workflow {
         	file(row.cellranger_h5, checkIfExists: false)]
     }
 	
-	QC_ch = scDblFinder(cellranger_h5_ch)
+	h5ad_ch = create_h5ad(cellranger_h5_ch)
+
+	QC_ch = scDblFinder(h5ad_ch)
 	| QC_plots
 
 	filtered_adata_ch = QC_prefilter(QC_ch.adata)
