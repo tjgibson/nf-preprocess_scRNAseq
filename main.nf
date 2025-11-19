@@ -48,6 +48,7 @@ log.info """
 	
 	script:
     """
+	export NUMBA_CACHE_DIR="./numbacache"
 	create_h5ad.py ${cellranger_h5} ${meta.sample}.h5ad ${params.mitochondrial_prefix}
 	"""
     
