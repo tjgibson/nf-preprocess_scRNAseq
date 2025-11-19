@@ -20,6 +20,9 @@ log.info """
 	batch_correction_method: ${params.batch_correction_method} 
 	mitochondrial_prefix: ${params.mitochondrial_prefix} 
 	R_utils_file: ${params.R_utils_file} 
+	cluster_npcs: ${params.cluster_npcs} 
+  	cluster_resolution: ${params.cluster_resolution} 
+  	integrate_samples: ${params.integrate_samples} 
 	"""
 	.stripIndent()
 
