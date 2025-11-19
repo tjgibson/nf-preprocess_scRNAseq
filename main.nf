@@ -48,7 +48,7 @@ log.info """
 	
 	script:
     """
-	create_spatialdata_object.py ${cellranger_h5} ${meta.sample}.h5ad ${params.mitochondrial_prefix}
+	create_h5ad.py ${cellranger_h5} ${meta.sample}.h5ad ${params.mitochondrial_prefix}
 	"""
     
     stub:
@@ -141,7 +141,7 @@ log.info """
 	
 	script:
     """
-	generate_QC_plots.R \
+	QC_prefiltering.R \
 		${h5ad} \
 		${meta.sample}_filtered.h5ad \
 		${params.UMI_filter_strategy} \
