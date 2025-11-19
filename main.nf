@@ -48,7 +48,7 @@ log.info """
 	
 	script:
     """
-	create_spatialdata_object.py ${cellranger.h5} ${meta.sample}.h5ad ${params.mitochondrial_prefix}
+	create_spatialdata_object.py ${cellranger_h5} ${meta.sample}.h5ad ${params.mitochondrial_prefix}
 	"""
     
     stub:
