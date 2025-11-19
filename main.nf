@@ -91,7 +91,6 @@ log.info """
 	tag "$meta.sample"
 	container = "tjmgibson/scrnaseq_preprocess:v1"
 	publishDir "${params.results_dir}/QC/preclustering/",pattern: '*.pdf', mode: 'copy'
-	r
 	input:
 	tuple val(meta), path(h5ad)
 	
