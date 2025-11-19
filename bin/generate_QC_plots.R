@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript --vanilla
+
 # Setup ========================================================================
 suppressPackageStartupMessages({
   library(anndataR)

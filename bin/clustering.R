@@ -1,3 +1,5 @@
+#!/usr/bin/Rscript --vanilla
+
 # setup ========================================================================
 library(Seurat)
 library(anndataR)
