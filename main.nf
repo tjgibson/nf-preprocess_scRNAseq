@@ -218,7 +218,7 @@ workflow {
         meta = row.subMap('sample')
         [
         	meta, 
-        	file(row.cellranger_h5, checkIfExists: false)]
+        	file(row.cellranger_h5, checkIfExists: true)]
     }
 	
 	h5ad_ch = create_h5ad(cellranger_h5_ch)
