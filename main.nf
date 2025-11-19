@@ -71,16 +71,16 @@ log.info """
 	tuple val(meta), path(h5ad)
 	
 	output:
-	tuple val(meta), path("${meta.sample}.h5ad")
+	tuple val(meta), path("${meta.sample}_doublets.h5ad")
 	
 	script:
     """
-	scDblFinder.R ${h5ad} ${meta.sample}.h5ad
+	scDblFinder.R ${h5ad} ${meta.sample}_doublets.h5ad
 	"""
     
     stub:
     """
-    touch ${meta.sample}.h5ad
+    touch ${meta.sample}_doublets.h5ad
     """	
 }
 
