@@ -94,6 +94,7 @@ log.info """
 	publishDir "${params.results_dir}/QC/preclustering/",pattern: '*.pdf', mode: 'copy'
 	input:
 	tuple val(meta), path(h5ad)
+	path(util_file)
 	
 	output:
 	tuple val(meta), path(h5ad), emit: adata
@@ -112,7 +113,7 @@ log.info """
 		${params.max_doublet_score} \
 		${params.MAD_thresh} \
 		${params.percentile_thresh} \
-		${params.R_utils_file}
+		${util_file}
 		
 	"""
     
@@ -134,7 +135,8 @@ log.info """
 	
 	input:
 	tuple val(meta), path(h5ad)
-	
+	path(util_file)
+
 	output:
 	path("${meta.sample}_filtered.h5ad"), emit: filtered_adata
 	path("${meta.sample}_precluster_QC_stats.csv"), emit: QC_stats
@@ -224,10 +226,17 @@ workflow {
 	
 	h5ad_ch = create_h5ad(cellranger_h5_ch)
 
-	QC_ch = scDblFinder(h5ad_ch)
-	| QC_plots
+	plot_ch = scDblFinder(h5ad_ch)
+	
+	QC_ch = QC_plots(
+		plot_ch,
+		params.R_utils_file
+	)
 
-	filtered_adata_ch = QC_prefilter(QC_ch.adata)
+	filtered_adata_ch = QC_prefilter(
+		QC_ch.adata,
+		params.R_utils_file
+		)
 
 	filtered_adata_ch.filtered_adata
 	| collect
