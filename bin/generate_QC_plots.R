@@ -17,7 +17,7 @@ plot_fn <- args[2]
 min_UMI <-  as.numeric(args[3])
 max_UMI <-  as.numeric(args[4])
 min_genes_per_cell <- as.numeric(args[5])
-max_percent_mito <- as.numeric(args[6]_
+max_percent_mito <- as.numeric(args[6])
 max_doublet_score <- as.numeric(args[7])
 MAD_thresh <- as.numeric(args[8])
 percentile_thresh <- as.numeric(args[9])
