@@ -5,7 +5,7 @@ library(Seurat)
 library(anndataR)
 library(tidyverse)
 
-options(future.globals.maxSize = 1000 * 1024^2)
+options(future.globals.maxSize = 5000 * 1024^2)
 # read command line arguments ==================================================
 args <- commandArgs(TRUE)
 h5ad_fns <- unlist(strsplit(args[1], ","))
