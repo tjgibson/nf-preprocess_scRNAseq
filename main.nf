@@ -189,9 +189,10 @@ process clustering {
 
 	
 	script:
+	String h5ad_csv = h5ad.join(",")
     """
 	clustering.R \
-		${h5ad} \
+		${h5ad_csv} \
 		${params.experiment_name}_clustered_seurat.rds \
 		${params.cluster_npcs} \
 		${params.cluster_resolution} \
