@@ -20,7 +20,7 @@ seurat_obj_list <- list()
 for (i in seq(h5ad_fns)) {
   adata <- read_h5ad(h5ad_fns[i])
   seurat_obj <- adata$as_Seurat(x_mapping = "counts")
-  
+  seurat_obj$orig.ident <- gsub("_filtered.h5ad", "", h5ad_fns[i])
   if (i == 1) {
   first_obj <- seurat_obj
 } else {
