@@ -9,8 +9,8 @@ library(tidyverse)
 args <- commandArgs(TRUE)
 h5ad_fns <- unlist(strsplit(args[1], ","))
 out_fn <- args[2]
-cluster_npcs <- args[3]
-cluster_resolution <- args[4]
+cluster_npcs <- as.numeric(args[3])
+cluster_resolution <- as.numeric(args[4])
 integrate_data <- as.logical(args[5])
 experiment_name <- args[6]
 

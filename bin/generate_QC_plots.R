@@ -14,13 +14,13 @@ suppressPackageStartupMessages({
 args <- commandArgs(TRUE)
 h5ad_fn <- args[1]
 plot_fn <- args[2]
-min_UMI <-  args[3]
-max_UMI <-  args[4]
-min_genes_per_cell <- args[5]
-max_percent_mito <- args[6]
-max_doublet_score <- args[7]
-MAD_thresh <- args[8]
-percentile_thresh <- args[9]
+min_UMI <-  as.numeric(args[3])
+max_UMI <-  as.numeric(args[4])
+min_genes_per_cell <- as.numeric(args[5])
+max_percent_mito <- as.numeric(args[6]_
+max_doublet_score <- as.numeric(args[7])
+MAD_thresh <- as.numeric(args[8])
+percentile_thresh <- as.numeric(args[9])
 
 utils_path <- args[10]
 

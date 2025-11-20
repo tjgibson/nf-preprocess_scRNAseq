@@ -14,13 +14,13 @@ UMI_filter_strategy<- args[3]
 gene_per_cell_filter_strategy <- args[4]
 mito_filter_strategy <- args[5]
 doublet_filter_strategy <- args[6]
-min_UMI <- args[7]
-max_UMI <- args[8]
-min_genes_per_cell <- args[9]
-max_percent_mito <- args[10]
-max_doublet_score <- args[11]
-MAD_thresh <- args[12]
-percentile_thresh <- args[13]
+min_UMI <- as.numeric(args[7])
+max_UMI <- as.numeric(args[8])
+min_genes_per_cell <- as.numeric(args[9])
+max_percent_mito <- as.numeric(args[10])
+max_doublet_score <- as.numeric(args[11])
+MAD_thresh <- as.numeric(args[12])
+percentile_thresh <- as.numeric(args[13])
 
 
 utils_path <- args[14]
