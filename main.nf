@@ -51,7 +51,7 @@ log.info """
 	
 	script:
     """
-	decontX.R ${h5ad} ${raw_counts} ${meta.sample}_decontx.h5ad ${params.correct_ambient_RNA}
+	decontX.R ${filtered_counts} ${raw_counts} ${meta.sample}_decontx.h5ad ${params.correct_ambient_RNA}
 	"""
     
     stub:
