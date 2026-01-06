@@ -23,6 +23,7 @@ log.info """
 	cluster_npcs: ${params.cluster_npcs} 
   	cluster_resolution: ${params.cluster_resolution} 
   	integrate_samples: ${params.integrate_samples} 
+	ambient RNA correction: ${params.correct_ambient_RNA} 
 	"""
 	.stripIndent()
 
@@ -31,20 +32,47 @@ log.info """
  * cellranger h5 file
  */
  
+
+
+/*
+ * estimate ambient RNA contamination
+ */
+
+ process decontX {
+	tag "$meta.sample"
+	container = "tjmgibson/scrnaseq_preprocess:v2"
+	publishDir "${params.results_dir}/h5ad_files/unfiltered/", mode: 'copy'
+	
+	input:
+	tuple val(meta), path(filtered_counts), path(raw_counts)
+	
+	output:
+	tuple val(meta), path("${meta.sample}_decontx.h5ad")
+	
+	script:
+    """
+	decontX.R ${h5ad} ${raw_counts} ${meta.sample}_decontx.h5ad ${params.correct_ambient_RNA}
+	"""
+    
+    stub:
+    """
+    touch ${meta.sample}_decontx.h5ad
+    """	
+}
+
  /*
  * create_h5ad
  */
 
-
- process create_h5ad {
+ process basic_QC {
 	tag "$meta.sample"
 	container = "gcfntnu/scanpy:1.11.4"
 	
 	input:
-	tuple val(meta), path(cellranger_h5)
+	tuple val(meta), path(cellranger_h5), path(raw_counts)
 	
 	output:
-	tuple val(meta), path("${meta.sample}.h5ad")
+	tuple val(meta), path("${meta.sample}.h5ad"), path(raw_counts)
 	
 	script:
     """
@@ -58,13 +86,14 @@ log.info """
     """	
 }
 
+
 /*
  * calculate doublet score
  */
 
  process scDblFinder {
 	tag "$meta.sample"
-	container = "tjmgibson/scrnaseq_preprocess:v1"
+	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/h5ad_files/unfiltered/", mode: 'copy'
 	
 	input:
@@ -90,7 +119,7 @@ log.info """
 
  process QC_plots {
 	tag "$meta.sample"
-	container = "tjmgibson/scrnaseq_preprocess:v1"
+	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/QC/preclustering/",pattern: '*.pdf', mode: 'copy'
 	input:
 	tuple val(meta), path(h5ad)
@@ -129,7 +158,7 @@ log.info """
 
  process QC_prefilter {
 	tag "$meta.sample"
-	container = "tjmgibson/scrnaseq_preprocess:v1"
+	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/h5ad_files/filtered/",pattern: '*.h5ad', mode: 'copy'
 	publishDir "${params.results_dir}/filtering_stats/",pattern: '*.csv', mode: 'copy'
 	
@@ -173,7 +202,7 @@ log.info """
 
 process clustering {
 	tag "${params.experiment_name}"
-	container = "tjmgibson/scrnaseq_preprocess:v1"
+	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/seurat_objects/", pattern: '*.rds', mode: 'copy'
 	publishDir "${params.results_dir}/clusters/", pattern: '*clusters.csv', mode: 'copy'
 	publishDir "${params.results_dir}/UMAP/", pattern: '*UMAP.csv', mode: 'copy'
@@ -222,12 +251,15 @@ workflow {
         meta = row.subMap('sample')
         [
         	meta, 
-        	file(row.cellranger_h5, checkIfExists: true)]
+        	file(row.cellranger_h5, checkIfExists: true),
+			file(row.cellranger_h5_raw, checkIfExists: true)]
     }
 	
-	h5ad_ch = create_h5ad(cellranger_h5_ch)
+	h5ad_ch = decontX(cellranger_h5_ch)
 
-	plot_ch = scDblFinder(h5ad_ch)
+	plot_ch = h5ad_ch
+	| basic_QC(h5ad_ch)
+	| scDblFinder(decontx_ch)
 	
 	QC_ch = QC_plots(
 		plot_ch,

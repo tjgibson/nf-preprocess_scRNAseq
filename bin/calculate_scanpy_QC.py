@@ -6,13 +6,13 @@ import anndata as ad
 import sys
 
 # parse command line arguments =============================================================
-cellranger_h5_path = sys.argv[1]
+h5ad_path = sys.argv[1]
 out_fn = sys.argv[2]
 mito_prefix = sys.argv[3]
 
 ## create spatialdata object ===============================================================
-print("importing cellranger count table")
-adata = sc.read_10x_h5(cellranger_h5_path)
+print("importing h5ad file")
+adata = sc.read_h5ad(h5ad_path)
     
 # make the var names unique ================================================================
 print("making variable names unique")
