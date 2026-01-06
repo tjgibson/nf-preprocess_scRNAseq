@@ -258,8 +258,8 @@ workflow {
 	h5ad_ch = decontX(cellranger_h5_ch)
 
 	plot_ch = h5ad_ch
-	| basic_QC(h5ad_ch)
-	| scDblFinder(decontx_ch)
+	| basic_QC
+	| scDblFinder
 	
 	QC_ch = QC_plots(
 		plot_ch,
