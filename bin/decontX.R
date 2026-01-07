@@ -45,4 +45,4 @@ if (output_corrected_counts) {
 out_adata$obs$decontX_contamination <- sce$decontX_contamination
 
 # export adata =================================================================
-write_h5ad(adata, out_fn)
+write_h5ad(out_adata, out_fn)
