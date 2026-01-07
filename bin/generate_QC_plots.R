@@ -36,15 +36,15 @@ sc_metadata <- adata$obs |>
 
 # determine threshold ==========================================================
 UMI_thresh_manual <- c(log(min_UMI + 1), log(max_UMI + 1))
-UMI_thresh_percentile <- quantile(sc_metadata$log1p_total_counts, c(percentile_thresh, (1 - percentile_thresh)))
+UMI_thresh_percentile <- quantile(sc_metadata$log1p_total_counts, c(percentile_thresh, (1 - percentile_thresh)), na.rm = TRUE)
 UMI_threshold_MAD <- mad_threshold(sc_metadata$log1p_total_counts, MAD_thresh)
 
 mito_thresh_manual <- c(max_percent_mito)
-mito_thresh_percentile <- quantile(sc_metadata$pct_counts_mt, (1 - percentile_thresh))
+mito_thresh_percentile <- quantile(sc_metadata$pct_counts_mt, (1 - percentile_thresh), na.rm = TRUE)
 mito_threshold_MAD <- mad_threshold(sc_metadata$pct_counts_mt, MAD_thresh)[2]
 
 gpc_thresh_manual <- log(min_genes_per_cell + 1)
-gpc_thresh_percentile <- quantile(sc_metadata$log1p_n_genes_by_counts, percentile_thresh)
+gpc_thresh_percentile <- quantile(sc_metadata$log1p_n_genes_by_counts, percentile_thresh, na.rm = TRUE)
 gpc_thresh_MAD <- mad_threshold(sc_metadata$log1p_n_genes_by_counts, MAD_thresh)[1]
 
 doublet_thresh_manual <- max_doublet_score

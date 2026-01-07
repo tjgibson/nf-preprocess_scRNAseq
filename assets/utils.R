@@ -1,5 +1,6 @@
 # function to get threshold based on number of median absolute deviations
 mad_threshold <- function(x, nmads, allow_negative_values = FALSE) {
+  x <- x[!is.na(x)]
   threshold <- c(
     lower = (median(x) - (nmads * mad(x))),
     upper = (median(x) + (nmads * mad(x)))
