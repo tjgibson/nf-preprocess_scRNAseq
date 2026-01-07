@@ -69,10 +69,10 @@ log.info """
 	container = "gcfntnu/scanpy:1.11.4"
 	
 	input:
-	tuple val(meta), path(cellranger_h5), path(raw_counts)
+	tuple val(meta), path(cellranger_h5)
 	
 	output:
-	tuple val(meta), path("${meta.sample}.h5ad"), path(raw_counts)
+	tuple val(meta), path("${meta.sample}.h5ad")
 	
 	script:
     """
