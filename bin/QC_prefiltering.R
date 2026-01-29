@@ -10,22 +10,24 @@ suppressPackageStartupMessages({
 args <- commandArgs(TRUE)
 h5ad_fn <- args[1]
 out_fn <- args[2]
-UMI_filter_strategy<- args[3]
-gene_per_cell_filter_strategy <- args[4]
-mito_filter_strategy <- args[5]
-doublet_filter_strategy <- args[6]
-min_UMI <- as.numeric(args[7])
-max_UMI <- as.numeric(args[8])
-min_genes_per_cell <- as.numeric(args[9])
-max_percent_mito <- as.numeric(args[10])
-max_doublet_score <- as.numeric(args[11])
-MAD_thresh <- as.numeric(args[12])
-percentile_thresh <- as.numeric(args[13])
+sample_name <- args[3]
+UMI_filter_strategy<- args[4]
+gene_per_cell_filter_strategy <- args[5]
+mito_filter_strategy <- args[6]
+doublet_filter_strategy <- args[7]
+min_UMI <- as.numeric(args[8])
+max_UMI <- as.numeric(args[9])
+min_genes_per_cell <- as.numeric(args[10])
+max_percent_mito <- as.numeric(args[11])
+max_doublet_score <- as.numeric(args[12])
+MAD_thresh <- as.numeric(args[13])
+percentile_thresh <- as.numeric(args[14])
+manual_filter_barcodes_fn <- args[15]
 
 
-utils_path <- args[14]
+utils_path <- args[16]
 
-filter_stats_fn <- args[15]
+filter_stats_fn <- args[17]
 
 # source utility functions =====================================================
 source(utils_path)
@@ -100,7 +102,7 @@ if (doublet_filter_strategy == "automatic") {
 # perform filtering ============================================================
 # initialize table to store filtering stats
 filter_stats <- tibble(
-  filter_stage = c("total cells before filtering", "low_UMIs", "high_UMIs", "low_genes_per_cell", "high_percent_mitochondrial", "high_doublet_score", "total cells after filtering"),
+  filter_stage = c("total cells before filtering", "low_UMIs", "high_UMIs", "low_genes_per_cell", "high_percent_mitochondrial", "high_doublet_score", "manual_barcode_filter_list", "total cells after filtering"),
 
     filter_threshold = c(
       NA, 
@@ -109,11 +111,12 @@ filter_stats <- tibble(
       exp(thresholds$gpc_threshold$lower) - 1, 
       thresholds$mito_threshold$upper, 
       thresholds$doublet_threshold$upper,
+      NA,
       NA
       ),
 
-    n_cells_removed = as.integer(rep(NA, times = 7)),
-  n_cells_remaining = as.integer(rep(NA, times = 7))
+    n_cells_removed = as.integer(rep(NA, times = 8)),
+  n_cells_remaining = as.integer(rep(NA, times = 8))
   
 )
 
@@ -153,9 +156,22 @@ filtered_adata <- filtered_adata[keep_cells]
 filter_stats$n_cells_remaining[6] <- filtered_adata$n_obs()
 filter_stats$n_cells_removed[6] <- sum(!keep_cells)
 
-# add total cells after filtering
+# filter out any specific barcodes provided as input
+filter_barcodes_list <- read_csv(manual_filter_barcodes_fn) |> 
+  filter(sample == sample_name)
+
+keep_cells <- !(filtered_adata$obs_names %in% filter_barcodes_list$cell_id)
+filtered_adata <- filtered_adata[keep_cells]
+
+
 filter_stats$n_cells_remaining[7] <- filtered_adata$n_obs()
-filter_stats$n_cells_removed[7] <- adata$n_obs() - filtered_adata$n_obs()
+filter_stats$n_cells_removed[7] <- sum(!keep_cells)
+
+
+
+# add total cells after filtering
+filter_stats$n_cells_remaining[8] <- filtered_adata$n_obs()
+filter_stats$n_cells_removed[8] <- adata$n_obs() - filtered_adata$n_obs()
 
 
 # write filtering stats to file ================================================

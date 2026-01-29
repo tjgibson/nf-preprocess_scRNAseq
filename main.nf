@@ -165,6 +165,7 @@ log.info """
 	input:
 	tuple val(meta), path(h5ad)
 	path(util_file)
+	path(filter_barcodes_list)
 
 	output:
 	path("${meta.sample}_filtered.h5ad"), emit: filtered_adata
@@ -176,6 +177,7 @@ log.info """
 	QC_prefiltering.R \
 		${h5ad} \
 		${meta.sample}_filtered.h5ad \
+		${meta.sample} \
 		${params.UMI_filter_strategy} \
 		${params.gene_per_cell_filter_strategy} \
 		${params.mito_filter_strategy} \
@@ -187,6 +189,7 @@ log.info """
 		${params.max_doublet_score} \
 		${params.MAD_thresh} \
 		${params.percentile_thresh} \
+		${filter_barcodes_list} \
 		${params.R_utils_file} \
 		${meta.sample}_precluster_QC_stats.csv
 		
@@ -266,9 +269,11 @@ workflow {
 		params.R_utils_file
 	)
 
+
 	filtered_adata_ch = QC_prefilter(
 		QC_ch.adata,
-		params.R_utils_file
+		params.R_utils_file,
+		file("${params.barcode_filter_list}",  checkIfExists: true)
 		)
 
 	filtered_adata_ch.filtered_adata
