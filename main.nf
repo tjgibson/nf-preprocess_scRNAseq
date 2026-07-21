@@ -40,6 +40,7 @@ log.info """
 
  process decontX {
 	tag "$meta.sample"
+	label 'process_medium'
 	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/h5ad_files/unfiltered/", mode: 'copy'
 	
@@ -66,6 +67,7 @@ log.info """
 
  process basic_QC {
 	tag "$meta.sample"
+	label 'process_low'
 	container = "gcfntnu/scanpy:1.11.4"
 	
 	input:
@@ -93,6 +95,7 @@ log.info """
 
  process scDblFinder {
 	tag "$meta.sample"
+	label 'process_medium'
 	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/h5ad_files/unfiltered/", mode: 'copy'
 	
@@ -119,6 +122,7 @@ log.info """
 
  process QC_plots {
 	tag "$meta.sample"
+	label 'process_low'
 	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/QC/preclustering/",pattern: '*.pdf', mode: 'copy'
 	input:
@@ -158,6 +162,7 @@ log.info """
 
  process QC_prefilter {
 	tag "$meta.sample"
+	label 'process_low'
 	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/h5ad_files/filtered/",pattern: '*.h5ad', mode: 'copy'
 	publishDir "${params.results_dir}/filtering_stats/",pattern: '*.csv', mode: 'copy'
@@ -205,6 +210,7 @@ log.info """
 
 process clustering {
 	tag "${params.experiment_name}"
+	label 'process_high'
 	container = "tjmgibson/scrnaseq_preprocess:v2"
 	publishDir "${params.results_dir}/seurat_objects/", pattern: '*.rds', mode: 'copy'
 	publishDir "${params.results_dir}/clusters/", pattern: '*clusters.csv', mode: 'copy'
