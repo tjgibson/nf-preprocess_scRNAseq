@@ -21,8 +21,16 @@ raw <- Seurat::Read10X_h5(raw_count_fn)
 
 
 # create sce object ============================================================
-sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts=filtered$`Gene Expression`))
-raw_sce <- SingleCellExperiment::SingleCellExperiment(assays = list(counts=raw$`Gene Expression`))
+if (is.list(filtered)) {
+  sce_mat_list_filtered <- list(counts=filtered$`Gene Expression`)
+  sce_mat_list_raw <- list(counts=raw$`Gene Expression`)
+} else {
+  sce_mat_list_filtered <- list(counts=filtered)
+  sce_mat_list_raw <- list(counts=raw)
+}
+
+sce <- SingleCellExperiment::SingleCellExperiment(assays = sce_mat_list_filtered)
+raw_sce <- SingleCellExperiment::SingleCellExperiment(assays = sce_mat_list_raw)
 
 # Run decontX ==============================================================
 sce <- decontX(sce, background = raw_sce)
